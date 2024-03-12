@@ -19,6 +19,7 @@ phys-virt-offset = "0xffff_0000_0000_0000"
 # MMIO regions with format (`base_paddr`, `size`).
 mmio-regions = [
     ["0x20008000", "0x1000"], # uart8250 UART0
+    ["0x20010000", "0x1000"], # dw-adp-gpio GPIO0
     ["0x32000000", "0x8000"], # arm,gic-400
     ["0x32011000", "0x1000"], # CPU CSR
     ["0x33002000", "0x1000"], # Top CRM
@@ -39,10 +40,14 @@ virtio-mmio-regions = []
 uart-paddr = "0x20008000"
 # UART irq from device tree
 uart-irq = "0xd5"
+# GPIO Address
+gpio-paddr = "0x20010000"
 # GICD Address
 gicd-paddr = "0x32001000"
 # GICC Address
 gicc-paddr = "0x32002000"
+# PINMUX
+pinmux-paddr = "0x70038000"
 
 # BST A1000B board registers
 CPU_CSR_BASE = "0x32011000"

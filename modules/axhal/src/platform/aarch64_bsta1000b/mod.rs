@@ -1,4 +1,5 @@
 mod dw_apb_uart;
+mod dw_apb_gpio;
 
 pub mod mem;
 pub mod misc;
@@ -46,6 +47,8 @@ pub(crate) unsafe extern "C" fn rust_entry_secondary(cpu_id: usize) {
 ///
 /// For example, the interrupt controller and the timer.
 pub fn platform_init() {
+    dw_apb_gpio::init_led();
+    
     #[cfg(feature = "irq")]
     super::aarch64_common::gic::init_primary();
     super::aarch64_common::generic_timer::init_percpu();

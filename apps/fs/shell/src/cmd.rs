@@ -1,6 +1,10 @@
 use std::fs::{self, File, FileType};
 use std::io::{self, prelude::*};
 use std::{string::String, vec::Vec};
+use dw_apb_gpio::Gpio;
+use std::thread;
+use std::time::Duration;
+
 
 #[cfg(all(not(feature = "axstd"), unix))]
 use std::os::unix::fs::{FileTypeExt, PermissionsExt};
@@ -27,6 +31,7 @@ const CMD_TABLE: &[(&str, CmdHandler)] = &[
     ("pwd", do_pwd),
     ("rm", do_rm),
     ("uname", do_uname),
+    ("marquee",do_marquee)
 ];
 
 fn file_type_to_char(ty: FileType) -> char {
@@ -271,6 +276,34 @@ fn do_exit(_args: &str) {
     println!("Bye~");
     std::process::exit(0);
 }
+
+fn do_marquee(_args: &str) {
+    
+    let gpio_base = 0xffff_0000_2001_0000 as *mut u8;
+    let mut led_gpio = Gpio::new(gpio_base);
+
+    println!("led marquee start...");
+    loop {
+        // 依次打开LED灯
+        for i in 49..53 {
+            print!("open led {}\n", i);
+            led_gpio.gpio_write(i, 1); 
+            println!("direction is {}", led_gpio.gpio_getdir(i)); // 读取gpio的方向
+            println!("value is {}", led_gpio.gpio_read(i));  // 读取gpio的值
+            thread::sleep(Duration::from_secs(1));
+        }
+
+        // 依次关闭LED灯
+        for i in 49..53 {
+            print!("close led {}\n", i);
+            led_gpio.gpio_write(i, 0); 
+            println!("direction is {}", led_gpio.gpio_getdir(i)); // 读取gpio的方向
+            println!("value is {}", led_gpio.gpio_read(i));  // 读取gpio的值
+            thread::sleep(Duration::from_secs(1));
+        }
+    }
+}
+
 
 pub fn run_cmd(line: &[u8]) {
     let line_str = unsafe { core::str::from_utf8_unchecked(line) };
