@@ -5,6 +5,10 @@ pub const MAX_HARTS: usize = 8;
 /// CPU HWID from cpu device tree nodes with "reg" property
 pub const CPU_HWID: [usize; MAX_HARTS] = [0x00, 0x100, 0x200, 0x300, 0x400, 0x500, 0x600, 0x700];
 
+pub fn find_index_in_hwid(value: usize) -> Option<usize> {
+    CPU_HWID.iter().position(|&x| x == value)
+}
+
 /// Starts the given secondary CPU with its boot stack.
 pub fn start_secondary_cpu(cpu_id: usize, stack_top: PhysAddr) {
     if cpu_id >= MAX_HARTS {

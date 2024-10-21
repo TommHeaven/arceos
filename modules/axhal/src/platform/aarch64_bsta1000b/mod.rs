@@ -37,6 +37,12 @@ pub(crate) unsafe extern "C" fn rust_entry(cpu_id: usize, dtb: usize) {
 
 #[cfg(feature = "smp")]
 pub(crate) unsafe extern "C" fn rust_entry_secondary(cpu_id: usize) {
+    let cpu_id = match mp::find_index_in_hwid(cpu_id) {
+        Some(idx) =>  idx,
+        None =>  { 
+            error!("invalid cpu id {:#x}", cpu_id); return 
+        }
+    };
     crate::arch::set_exception_vector_base(exception_vector_base as usize);
     crate::cpu::init_secondary(cpu_id);
     rust_main_secondary(cpu_id);
