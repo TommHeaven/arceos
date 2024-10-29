@@ -25,6 +25,12 @@ kernel-aspace-base = "0xffff_0000_0000_0000"
 kernel-aspace-size = "0x0000_ffff_ffff_f000"
 # MMIO regions with format (`base_paddr`, `size`).
 mmio-regions = [
+    ["0x20000000", "0x1000"], # I2C0
+    ["0x20001000", "0x1000"], # I2C1
+    ["0x20002000", "0x1000"], # I2C2
+    ["0x20003000", "0x1000"], # I2C3
+    ["0x20004000", "0x1000"], # I2C4
+    ["0x20005000", "0x1000"], # I2C5
     ["0x20008000", "0x1000"], # uart8250 UART0
     ["0x32000000", "0x8000"], # arm,gic-400
     ["0x32011000", "0x1000"], # CPU CSR

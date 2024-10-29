@@ -11,11 +11,11 @@ mod aspace;
 pub use self::aspace::AddrSpace;
 
 use axerrno::{AxError, AxResult};
-use axhal::mem::phys_to_virt;
+use axhal::mem::{ phys_to_virt, MemRegionFlags };
 use axhal::paging::PagingError;
 use kspin::SpinNoIrq;
 use lazyinit::LazyInit;
-use memory_addr::{va, PhysAddr};
+use memory_addr::{va, PhysAddr, pa};
 
 static KERNEL_ASPACE: LazyInit<SpinNoIrq<AddrSpace>> = LazyInit::new();
 
@@ -56,11 +56,15 @@ pub fn kernel_page_table_root() -> PhysAddr {
 ///
 /// It mainly sets up the kernel virtual memory address space and recreate a
 /// fine-grained kernel page table.
-pub fn init_memory_management() {
+pub fn init_memory_management(dtb: usize) {
     info!("Initialize virtual memory management...");
 
-    let kernel_aspace = new_kernel_aspace().expect("failed to initialize kernel address space");
+    let mut kernel_aspace = new_kernel_aspace().expect("failed to initialize kernel address space");
     debug!("kernel address space init OK: {:#x?}", kernel_aspace);
+    
+    let dtb_pa = pa!(dtb);
+    kernel_aspace.map_linear(phys_to_virt(dtb_pa), dtb_pa, 0x10_0000, (MemRegionFlags::RESERVED | MemRegionFlags::READ).into())
+                            .expect("failed to mapping dtb address space");
     KERNEL_ASPACE.init_once(SpinNoIrq::new(kernel_aspace));
     unsafe { axhal::arch::write_page_table_root(kernel_page_table_root()) };
 }

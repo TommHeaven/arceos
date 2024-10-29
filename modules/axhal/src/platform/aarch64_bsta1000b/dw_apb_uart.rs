@@ -61,6 +61,6 @@ pub fn init_irq() {
 }
 
 /// UART IRQ Handler
-pub fn handle() {
+pub fn handle(_idx:u32) {
     trace!("Uart IRQ Handler");
 }

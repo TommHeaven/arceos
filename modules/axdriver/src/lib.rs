@@ -67,6 +67,9 @@ extern crate alloc;
 #[macro_use]
 mod macros;
 
+extern crate ox3c_raw;
+extern crate i2c_designware;
+
 mod bus;
 mod drivers;
 mod dummy;
@@ -83,6 +86,7 @@ pub mod prelude;
 #[allow(unused_imports)]
 use self::prelude::*;
 pub use self::structs::{AxDeviceContainer, AxDeviceEnum};
+use axhal::mem::phys_to_virt;
 
 #[cfg(feature = "block")]
 pub use self::structs::AxBlockDevice;
@@ -148,9 +152,12 @@ impl AllDevices {
 }
 
 /// Probes and initializes all device drivers, returns the [`AllDevices`] struct.
-pub fn init_drivers() -> AllDevices {
+pub fn init_drivers(dtb: usize) -> AllDevices {
     info!("Initialize device drivers...");
     info!("  device model: {}", AllDevices::device_model());
+
+    let dtb_vaddr = phys_to_virt(dtb.into()).as_usize() as *const u8;
+    r4l::init::driver_framework_init(dtb_vaddr);
 
     let mut all_devs = AllDevices::default();
     all_devs.probe();

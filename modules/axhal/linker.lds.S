@@ -32,6 +32,34 @@ SECTIONS
         *(.data .data.*)
         *(.sdata .sdata.*)
         *(.got .got.*)
+
+        _initcall1 = .;
+        KEEP(*(.initcall1.*))
+        _initcall1_end =.;
+
+        _initcall2 = .;
+        KEEP(*(.initcall2.*))
+        _initcall2_end =.;
+
+        _initcall3 = .;
+        KEEP(*(.initcall3.*))
+        _initcall3_end =.;
+
+        _initcall4 = .;
+        KEEP(*(.initcall4.*))
+        _initcall4_end =.;
+
+        _initcall5 = .;
+        KEEP(*(.initcall5.*))
+        _initcall5_end =.;
+
+        _initcall6 = .;
+        KEEP(*(.initcall6.*))
+        _initcall6_end =.;
+
+        _initcall7 = .;
+        KEEP(*(.initcall7.*))
+        _initcall7_end =.;
     }
 
     .tdata : ALIGN(0x10) {

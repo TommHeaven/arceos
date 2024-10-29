@@ -44,3 +44,8 @@ axalloc = { workspace = true, optional = true }
 axhal = { workspace = true, optional = true }
 axconfig = { workspace = true, optional = true }
 axdma = { workspace = true, optional = true }
+
+# r4l driver
+r4l = { path = "../../r4l/r4l/" , features=["arceos"] }
+i2c_designware = { path = "../../r4l/drivers/i2c/busses/i2c-designware" , features=["arceos"] }
+ox3c_raw = { path = "../../r4l/drivers/i2c/ox3c-raw" , features=["arceos"] }

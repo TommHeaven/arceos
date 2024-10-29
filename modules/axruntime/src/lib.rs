@@ -145,7 +145,7 @@ pub extern "C" fn rust_main(cpu_id: usize, dtb: usize) -> ! {
     init_allocator();
 
     #[cfg(feature = "paging")]
-    axmm::init_memory_management();
+    axmm::init_memory_management(dtb);
 
     info!("Initialize platform devices...");
     axhal::platform_init();
@@ -156,7 +156,7 @@ pub extern "C" fn rust_main(cpu_id: usize, dtb: usize) -> ! {
     #[cfg(any(feature = "fs", feature = "net", feature = "display"))]
     {
         #[allow(unused_variables)]
-        let all_devices = axdriver::init_drivers();
+        let all_devices = axdriver::init_drivers(dtb);
 
         #[cfg(feature = "fs")]
         axfs::init_filesystems(all_devices.block);
@@ -252,7 +252,7 @@ fn init_interrupt() {
         axhal::time::set_oneshot_timer(deadline);
     }
 
-    axhal::irq::register_handler(TIMER_IRQ_NUM, || {
+    axhal::irq::register_handler(TIMER_IRQ_NUM, |_| {
         update_timer();
         #[cfg(feature = "multitask")]
         axtask::on_timer_tick();
